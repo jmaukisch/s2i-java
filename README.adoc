@@ -1,17 +1,21 @@
 == OpenShift S2I Builder for Java
-This Source-to-Image Builder let's you create projects targetting Java OpenJDK 8 and built with:
+This Source-to-Image Builder let's you create projects targetting Java OpenJDK 11 and built with:
 
-* maven
-* gradle
+* maven 3.6
+* gradle 5.1
 
-NOTE: If a project has a pom.xml and a build.gradle, maven will take precedence
+NOTE: If a project has a pom.xml and a build.gradle, maven will take precedence. If a gradle project contains gradlew it will have precedence and the provided version of the image will not be used.
 
 This builder/runtime s2i image can be used with SpringBoot, Vert.X, Wildfly Swarm, DropWizard and many other microservices frameworks. 
 
 == BUILD ENV Options
 
 * *APP_SUFFIX*: Jar file suffix to use to locate the generated artifact to use (e.g. xxxxx${APP_SUFFIX}.jar)
-* *BUILDER_ARGS*: Allows you to specify options to pass to maven or gradle
+* Maven:  *MAVEN_ARGS*: Allows you to specify options to pass to gradle
+* Gradle: *BUILDER_ARGS*: Allows you to specify options to pass to gradle
+* Proxy: *HTTP_PROXY_HOST*, *HTTP_PROXY_PORT*, *HTTP_PROXY_USERNAME*, *HTTP_PROXY_PASSWORD*
+** Maven: will be set as http proxy
+** Gradle: will be set as http & https proxy
 
 == RUN ENV Options
 
@@ -19,7 +23,7 @@ This builder/runtime s2i image can be used with SpringBoot, Vert.X, Wildfly Swar
 
 
 == Defaults
-If you do not specify any BUILDER_ARGS, by default the s2i image will use the following:
+If you do not specify any MAVEN_ARGS/BUILDER_ARGS, by default the s2i image will use the following:
 
 * Maven
 
@@ -38,7 +42,7 @@ BUILDER_ARGS="build -x test"
 * First load all the needed resources in a project.
 
 ----
-oc create -f https://raw.githubusercontent.com/jorgemoralespou/s2i-java/master/ose3/s2i-java-imagestream.json
+oc create -f https://raw.githubusercontent.com/jmaukisch/s2i-java/master/ose3/s2i-java-imagestream.json
 ----
 
 * Once the builder s2i-java has been registered, you can create an app with:
