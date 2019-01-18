@@ -24,6 +24,28 @@ function configure_proxy() {
   fi
 }
 
+function configure_proxy_gradle() {
+  if [ -n "$HTTP_PROXY_HOST" -a -n "$HTTP_PROXY_PORT" ]; then
+    
+    xml="systemProp.http.proxyHost=$HTTP_PROXY_HOST\
+         systemProp.http.proxyPort=$HTTP_PROXY_PORT"
+    if [ -n "$HTTP_PROXY_USERNAME" -a -n "$HTTP_PROXY_PASSWORD" ]; then
+    
+
+      xml="$xml\
+         systemProp.http.proxyUser=$HTTP_PROXY_USERNAME\
+         systemProp.http.proxyPassword=$HTTP_PROXY_PASSWORD"
+    fi
+    if [ -n "$HTTP_PROXY_NONPROXYHOSTS" ]; then
+        xml="$xml\
+          systemProp.http.nonProxyHosts=$HTTP_PROXY_NONPROXYHOSTS"
+    fi
+    chmod 775 $HOME/.gradle/
+    sed -i "s|### configured http proxy ###|$xml|" $HOME/.gradle/gradle.properties
+    cat $HOME/.gradle/gradle.properties
+  fi
+}
+
 # insert settings for mirrors/repository managers into settings.xml if supplied
 function configure_mirrors() {
   if [ -n "$MAVEN_MIRROR_URL" ]; then

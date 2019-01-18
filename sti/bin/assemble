@@ -27,12 +27,18 @@ if [ -d $LOCAL_SOURCE_DIR/configuration ]; then
     mv $LOCAL_SOURCE_DIR/configuration/settings.xml $HOME/.m2
   fi
 
+  if [ -f $LOCAL_SOURCE_DIR/configuration/gradle.properties ]; then
+    mkdir -p $HOME/.m2
+    mv $LOCAL_SOURCE_DIR/configuration/gradle.properties $HOME/.gradle
+  fi
+
   # We move the rest of the configuration, if provided to the place where the app will run
   cp -v $LOCAL_SOURCE_DIR/configuration/* $DEPLOY_DIR
 fi
 
 configure_proxy
 configure_mirrors
+configure_proxy_gradle
 
 manage_incremental_build
 
@@ -79,13 +85,14 @@ elif [ -f "$LOCAL_SOURCE_DIR/build.gradle" ]; then
   ARTIFACT_DIR=${ARTIFACT_DIR:-build/libs}
 
   echo "Building with gradle. $LOCAL_SOURCE_DIR/build.gradle found."
-
+  export GRADLE_USER_HOME="$HOME/.gradle/"
   # Use Gradle wrapper if available
-  if [ -f "$LOCAL_SOURCE_DIR/gradlew" ]; then
-    GRADLE_CMD="./gradlew"
-  else
+  #if [ -f "$LOCAL_SOURCE_DIR/gradlew" ]; then
+  #  chmod +x $LOCAL_SOURCE_DIR/gradlew
+  #  GRADLE_CMD="./gradlew"
+  #else
     GRADLE_CMD="gradle"
-  fi
+  #fi
       
   pushd $LOCAL_SOURCE_DIR &> /dev/null
 
