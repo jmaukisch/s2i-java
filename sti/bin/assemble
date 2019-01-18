@@ -87,12 +87,13 @@ elif [ -f "$LOCAL_SOURCE_DIR/build.gradle" ]; then
   echo "Building with gradle. $LOCAL_SOURCE_DIR/build.gradle found."
   export GRADLE_USER_HOME="$HOME/.gradle/"
   # Use Gradle wrapper if available
-  #if [ -f "$LOCAL_SOURCE_DIR/gradlew" ]; then
-  #  chmod +x $LOCAL_SOURCE_DIR/gradlew
-  #  GRADLE_CMD="./gradlew"
-  #else
+  if [ -f "$LOCAL_SOURCE_DIR/gradlew" ]; then
+    chmod +x $LOCAL_SOURCE_DIR/gradlew
+    export JAVA_OPTS="-Djdk.http.auth.tunneling.disabledSchemes="
+    GRADLE_CMD="./gradlew"
+  else
     GRADLE_CMD="gradle"
-  #fi
+  fi
       
   pushd $LOCAL_SOURCE_DIR &> /dev/null
 
